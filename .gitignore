@@ -1,5 +1,4 @@
 build
 .vscode
-parser
 .~lock*
 *.fs182
