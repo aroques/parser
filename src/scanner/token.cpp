@@ -23,7 +23,8 @@ void print_token(Token t)
 int get_token_type(int final_state, std::string token_instance)
 {
     std::set<std::string> keywords = { "start", "stop", "loop", "void", 
-        "var", "return", "scan", "out", "program", "if", "then", "let"
+        "var", "return", "scan", "out", "program", "if", "then", "let",
+        "integer"
     };
 
     if (keywords.count(token_instance) > 0) 
@@ -54,6 +55,35 @@ static std::string get_token_type(int type)
 
         case END_OF_FILE_TK:
             return "EOF";
+        
+        default:
+            return "token type not defined";
+    }
+}
+
+std::string token_string(Token t)
+{
+    return token_string(t.type, t.instance);
+}
+
+std::string token_string(int token_type, std::string token_instance)
+{
+    switch (token_type)
+    {
+        case OPERATOR_DELIMITER_TK: 
+            return token_instance + " token";
+
+        case IDENTIFIER_TK:
+            return "identifier token";
+
+        case KEYWORD_TK:
+            return token_instance + " keyword";
+
+        case NUMBER_TK:
+            return "number token";
+
+        case END_OF_FILE_TK:
+            return "EOF token";
         
         default:
             return "token type not defined";

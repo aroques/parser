@@ -23,5 +23,7 @@ struct Token
 void print_token_header();
 void print_token(Token t);
 int get_token_type(int state, std::string token_instance);
+std::string token_string(Token t);
+std::string token_string(int token_type, std::string token_instance);
 
 #endif // !TOKEN_HPP

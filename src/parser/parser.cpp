@@ -1,22 +1,22 @@
 #include <iostream>
 
-#include "productions.hpp"
 #include "scanner/include/scanner.hpp"
 #include "scanner/include/token.hpp"
 
+#include "parser/include/productions.hpp"
+#include "parser/include/error_handling.hpp"
 
 void parser()
 {
     std::cout << "parsing..." << std::endl;
 
-    Token token;
+    Token token = get_next_token();
     
-    S(token);
+    program(token);
 
     if (token.type != END_OF_FILE_TK) 
     {
-        std::cout << "parser error: start production did not return EOF token." << std::endl;
-        std::exit(EXIT_FAILURE);
+        print_error_and_exit(token_string(END_OF_FILE_TK, ""), token_string(token), token.line_number);
     }
 
     std::cout << "successful parse." << std::endl;

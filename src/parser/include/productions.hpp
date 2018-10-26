@@ -3,6 +3,8 @@
 
 #include "scanner/include/token.hpp"
 
-void S(Token& token);
+void program(Token& token);
+void vars(Token& token);
+void block(Token& token);
 
 #endif // !PRODUCTIONS_HPP
