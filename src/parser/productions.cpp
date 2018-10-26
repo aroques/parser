@@ -64,6 +64,4 @@ void block(Token& token)
         else print_error_and_exit(token_string(KEYWORD_TK, "stop"), token_string(token), token.line_number);
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "start"), token_string(token), token.line_number);
-
-    return;
 }
