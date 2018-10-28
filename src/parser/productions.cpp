@@ -121,11 +121,11 @@ void stat(Token& token)
         return;
     }  
     
-    // if (token.instance == "let")
-    // {
-    //     assign(token);
-    //     return;
-    // }  
+    if (token.instance == "let")
+    {
+        assign(token);
+        return;
+    }  
 
     print_error_and_exit("scan, out, block, if, loop, or " + 
         token_string(KEYWORD_TK, "let"), token_string(token), token.line_number);
@@ -320,4 +320,33 @@ void RO(Token& token)
 
     print_error_and_exit("<, >, or " + 
         token_string(OPERATOR_DELIMITER_TK, "="), token_string(token), token.line_number);
+}
+
+void assign(Token& token) 
+{   
+    if (token.instance == "let")
+    {
+        token = get_next_token();
+        
+        if (token.type == IDENTIFIER_TK)
+        {
+            token = get_next_token();
+
+            if (token.instance == "=")
+            {
+                token = get_next_token();
+                expr(token);
+                
+                if (token.instance == ".")
+                {
+                    token = get_next_token();
+                    return;
+                }
+                else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "."), token_string(token), token.line_number);
+            }
+            else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "="), token_string(token), token.line_number);
+        }
+        else print_error_and_exit(token_string(IDENTIFIER_TK, ""), token_string(token), token.line_number);
+    }
+    else print_error_and_exit(token_string(KEYWORD_TK, "let"), token_string(token), token.line_number);
 }

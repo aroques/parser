@@ -18,5 +18,6 @@ void R(Token& token);
 void if_(Token& token);
 void loop(Token& token);
 void RO(Token& token);
+void assign(Token& token);
 
 #endif // !PRODUCTIONS_HPP
