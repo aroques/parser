@@ -76,7 +76,8 @@ void stats(Token& token)
 
 void mStat(Token& token) 
 {   
-    std::set<std::string> stat_productions = {"scan", "out", "block"};
+    std::set<std::string> stat_productions = 
+        {"scan", "out", "block", "if", "loop", "let"};
     
     if (stat_productions.count(token.instance) > 0)
     {
@@ -107,9 +108,27 @@ void stat(Token& token)
         block(token);
         return;
     }  
+    
+    if (token.instance == "if")
+    {
+        if_(token);
+        return;
+    }  
+    
+    if (token.instance == "loop")
+    {
+        loop(token);
+        return;
+    }  
+    
+    // if (token.instance == "let")
+    // {
+    //     assign(token);
+    //     return;
+    // }  
 
-    print_error_and_exit("scan, out, or " + 
-        token_string(KEYWORD_TK, "block"), token_string(token), token.line_number);
+    print_error_and_exit("scan, out, block, if, loop, or " + 
+        token_string(KEYWORD_TK, "let"), token_string(token), token.line_number);
 }
 
 void in(Token& token) 
@@ -226,6 +245,79 @@ void R(Token& token)
         return;
     }
     
-    print_error_and_exit(token_string(IDENTIFIER_TK, "") + ", " + token_string(NUMBER_TK, "") + ", or"
+    print_error_and_exit(token_string(IDENTIFIER_TK, "") + ", " + token_string(NUMBER_TK, "") + ", or "
         + token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
+}
+
+void if_(Token& token) 
+{   
+    if (token.instance == "if")
+    {
+        token = get_next_token();
+
+        if (token.instance == "(")
+        {
+            token = get_next_token();
+            
+            expr(token);
+            RO(token);
+            expr(token);
+
+            if (token.instance == ")")
+            {
+                token = get_next_token();
+                stat(token);
+                return;
+            }
+            else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
+        }
+        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
+    }
+    else print_error_and_exit(token_string(KEYWORD_TK, "if"), token_string(token), token.line_number);
+}
+
+void loop(Token& token) 
+{   
+    if (token.instance == "loop")
+    {
+        token = get_next_token();
+        
+        if (token.instance == "(")
+        {
+            token = get_next_token();
+            
+            expr(token);
+            RO(token);
+            expr(token);
+
+            if (token.instance == ")")
+            {
+                token = get_next_token();
+                stat(token);
+                return;
+            }
+            else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
+        }
+        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
+    }
+    else print_error_and_exit(token_string(KEYWORD_TK, "loop"), token_string(token), token.line_number);
+}
+
+void RO(Token& token) 
+{   
+    if (token.instance == "<" || token.instance == ">" || token.instance == "=")
+    {
+        token = get_next_token();
+        
+        if (token.instance == "=")
+        {
+            token = get_next_token();
+            return;
+        }
+
+        return;
+    }
+
+    print_error_and_exit("<, >, or " + 
+        token_string(OPERATOR_DELIMITER_TK, "="), token_string(token), token.line_number);
 }

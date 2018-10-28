@@ -15,5 +15,8 @@ void expr(Token& token);
 void A(Token& token);
 void M(Token& token);
 void R(Token& token);
+void if_(Token& token);
+void loop(Token& token);
+void RO(Token& token);
 
 #endif // !PRODUCTIONS_HPP
