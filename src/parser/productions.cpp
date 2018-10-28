@@ -254,24 +254,8 @@ void if_(Token& token)
     if (token.instance == "if")
     {
         token = get_next_token();
-
-        if (token.instance == "(")
-        {
-            token = get_next_token();
-            
-            expr(token);
-            RO(token);
-            expr(token);
-
-            if (token.instance == ")")
-            {
-                token = get_next_token();
-                stat(token);
-                return;
-            }
-            else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
-        }
-        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
+        conditionalStat(token);
+        return;
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "if"), token_string(token), token.line_number);
 }
@@ -281,26 +265,31 @@ void loop(Token& token)
     if (token.instance == "loop")
     {
         token = get_next_token();
-        
-        if (token.instance == "(")
-        {
-            token = get_next_token();
-            
-            expr(token);
-            RO(token);
-            expr(token);
-
-            if (token.instance == ")")
-            {
-                token = get_next_token();
-                stat(token);
-                return;
-            }
-            else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
-        }
-        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
+        conditionalStat(token);
+        return;
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "loop"), token_string(token), token.line_number);
+}
+
+void conditionalStat(Token& token)
+{
+    if (token.instance == "(")
+    {
+        token = get_next_token();
+        
+        expr(token);
+        RO(token);
+        expr(token);
+
+        if (token.instance == ")")
+        {
+            token = get_next_token();
+            stat(token);
+            return;
+        }
+        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
+    }
+    else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
 }
 
 void RO(Token& token) 

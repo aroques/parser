@@ -17,6 +17,7 @@ void M(Token& token);
 void R(Token& token);
 void if_(Token& token);
 void loop(Token& token);
+void conditionalStat(Token& token);
 void RO(Token& token);
 void assign(Token& token);
 
