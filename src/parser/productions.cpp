@@ -76,7 +76,7 @@ void stats(Token& token)
 
 void mStat(Token& token) 
 {   
-    std::set<std::string> stat_productions = {"scan", "block"};
+    std::set<std::string> stat_productions = {"scan", "out", "block"};
     
     if (stat_productions.count(token.instance) > 0)
     {
@@ -96,7 +96,11 @@ void stat(Token& token)
         return;
     }
     
-    // if (token.instance == "out") out(token);
+    if (token.instance == "out") 
+    {
+        out(token);
+        return;
+    }
     
     if (token.instance == "block")
     {
@@ -104,7 +108,7 @@ void stat(Token& token)
         return;
     }  
 
-    print_error_and_exit("scan or " + 
+    print_error_and_exit("scan, out, or " + 
         token_string(KEYWORD_TK, "block"), token_string(token), token.line_number);
 }
 
@@ -130,26 +134,98 @@ void in(Token& token)
     else print_error_and_exit(token_string(KEYWORD_TK, "scan"), token_string(token), token.line_number);
 }
 
-// void out(Token& token) 
-// {
-//     if (token.instance == "[")
-//     {
-//         token = get_next_token();
+void out(Token& token) 
+{
+    if (token.instance == "out")
+    {
+        token = get_next_token();
         
-//         // expr();
-
-//         if (token.instance == "]")
-//         {
-//             token = get_next_token();
+        if (token.instance == "[")
+        {
+            token = get_next_token();
             
-//             if (token.instance == ".")
-//             {
-//                 token = get_next_token();
-//                 return;
-//             }
-//             else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "."), token_string(token), token.line_number);
-//         }
-//         else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "]"), token_string(token), token.line_number);
-//     }
-//     else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "["), token_string(token), token.line_number);
-// }
+            expr(token);
+
+            if (token.instance == "]")
+            {
+                token = get_next_token();
+                
+                if (token.instance == ".")
+                {
+                    token = get_next_token();
+                    return;
+                }
+                else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "."), token_string(token), token.line_number);
+            }
+            else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "]"), token_string(token), token.line_number);
+        }
+        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "["), token_string(token), token.line_number);
+    }
+    else print_error_and_exit(token_string(KEYWORD_TK, "out"), token_string(token), token.line_number);
+}
+
+void expr(Token& token) 
+{   
+    A(token);
+    
+    if (token.instance == "/" || token.instance == "*")
+    {
+        token = get_next_token();
+        expr(token);
+        return;
+    }
+
+    return;
+}
+
+void A(Token& token) 
+{   
+    M(token);
+    
+    if (token.instance == "+" || token.instance == "-")
+    {
+        token = get_next_token();
+        A(token);
+        return;
+    }
+
+    return;
+}
+
+void M(Token& token) 
+{   
+    if (token.instance == "-")
+    {
+        token = get_next_token();
+        M(token);
+        return;
+    }
+
+    R(token);
+    return;
+}
+
+void R(Token& token) 
+{   
+    if (token.instance == "(")
+    {
+        token = get_next_token();
+        expr(token);
+
+        if (token.instance == ")")
+        {
+            token = get_next_token();
+            return;
+        }
+        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
+    }
+    
+    if (token.type == IDENTIFIER_TK || token.type == NUMBER_TK)
+    {
+        token = get_next_token();
+        return;
+    }
+    
+    print_error_and_exit(token_string(IDENTIFIER_TK, "") + ", " + token_string(NUMBER_TK, "") + ", or"
+        + token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
+}
