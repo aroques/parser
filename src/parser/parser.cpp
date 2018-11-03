@@ -3,6 +3,7 @@
 #include "scanner/include/scanner.hpp"
 #include "scanner/include/token.hpp"
 
+#include "parser/include/node.hpp"
 #include "parser/include/productions.hpp"
 #include "parser/include/error_handling.hpp"
 
