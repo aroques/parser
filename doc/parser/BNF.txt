@@ -4,7 +4,7 @@
 <expr>     ->     <A> / <expr> | <A> * <expr> | <A>  
 <A>        ->     <M> + < A> | <M> - <A> | <M>  
 <M>        ->     - <M> | <R>  
-<R>        ->     ( <expr> ) | Identifier | Number  
+<R>        ->     ( <expr> ) | Identifier | Integer  
 <stats>    ->     <stat>  <mStat>  
 <mStat>    ->     empty |  <stat>  <mStat>  
 <stat>     ->     <in> | <out> | <block> | <if> | <loop> | <assign>  

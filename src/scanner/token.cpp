@@ -23,8 +23,7 @@ void print_token(Token t)
 int get_token_type(int final_state, std::string token_instance)
 {
     std::set<std::string> keywords = { "start", "stop", "loop", "void", 
-        "var", "return", "scan", "out", "program", "if", "then", "let",
-        "integer"
+        "var", "return", "scan", "out", "program", "if", "then", "let"
     };
 
     if (keywords.count(token_instance) > 0) 

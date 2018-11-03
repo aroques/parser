@@ -32,13 +32,13 @@ void vars(Token& token)
             {
                 token = get_next_token(); 
         
-                if (token.instance == "integer")
+                if (token.type == NUMBER_TK)
                 {
                     token = get_next_token(); 
                     vars(token);
                     return;
                 } 
-                else print_error_and_exit(token_string(KEYWORD_TK, "integer"), token_string(token), token.line_number);
+                else print_error_and_exit(token_string(NUMBER_TK, ""), token_string(token), token.line_number);
             }
             else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ":"), token_string(token), token.line_number);
         }
