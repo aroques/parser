@@ -13,10 +13,16 @@ struct Node* get_node(std::string label)
 
 static int height(struct Node* node) 
 {
-    if (node == NULL || node->children.begin() == node->children.end())
-        return 0; 
+    if (node == NULL)
+        // null leaf, so return 0
+        return 0;
+    
+    else if (node->children.begin() == node->children.end())
+        // A leaf with no children, so return 1
+        return 1;
+    
     else
-    { 
+    {
         // Compute the height of each subtree
         std::vector<int> heights;
         
@@ -25,7 +31,7 @@ static int height(struct Node* node)
     
         // Use the largest one
         return *max_element(heights.begin(), heights.end());
-    } 
+    }
 }
 
 static void print_given_level(struct Node* root, int level) 
