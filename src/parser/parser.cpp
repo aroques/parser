@@ -22,7 +22,7 @@ Node* parser()
         print_error_and_exit(token_string(END_OF_FILE_TK, ""), token_string(token), token.line_number);
     }
 
-    std::cout << "successful parse." << std::endl;
+    std::cout << "successful parse.\n\n";
 
     print_level_order(root);
 

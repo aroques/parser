@@ -12,20 +12,16 @@ struct Node* get_node(std::string label)
 }
 
 static int height(struct Node* node) 
-{ 
-    if (node == NULL) 
+{
+    if (node == NULL || node->children.begin() == node->children.end())
         return 0; 
     else
     { 
         // Compute the height of each subtree
         std::vector<int> heights;
+        
         for (auto child: node->children) 
-        {
-            if (child == NULL) 
-                break;
-            int h = height(child);
-            heights.push_back(h);
-        }
+            heights.push_back(height(child));
     
         // Use the largest one
         return *max_element(heights.begin(), heights.end()) + 1;
@@ -38,22 +34,26 @@ static void print_given_level(struct Node* root, int level)
         return; 
     
     if (level == 1)
-        std::cout << root->label << ", "; 
+        std::cout << root->label << " "; 
     
     else if (level > 1) 
     {
         for (auto child: root->children) 
         {
-            if (child == NULL) 
-                break;
             print_given_level(child, level - 1); 
         }
     } 
 }
 
+/*
+    Code for level order traversal adapted from:
+      https://www.geeksforgeeks.org/level-order-tree-traversal/
+*/
 void print_level_order(struct Node* root) 
-{ 
+{
     int h = height(root); 
+    
+    std::cout << "height: " << std::to_string(h) << "\n\n";
 
     for (int i = 1; i <= h; i++)
     {
