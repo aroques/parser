@@ -21,10 +21,10 @@ static int height(struct Node* node)
         std::vector<int> heights;
         
         for (auto child: node->children) 
-            heights.push_back(height(child));
+            heights.push_back(height(child) + 1);
     
         // Use the largest one
-        return *max_element(heights.begin(), heights.end()) + 1;
+        return *max_element(heights.begin(), heights.end());
     } 
 }
 
