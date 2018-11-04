@@ -3,17 +3,19 @@
 #include "scanner/include/scanner.hpp"
 #include "scanner/include/token.hpp"
 
-#include "parser/include/node.hpp"
+#include "parser/include/Node.hpp"
 #include "parser/include/productions.hpp"
 #include "parser/include/error_handling.hpp"
 
-void parser()
+Node* parser()
 {
     std::cout << "parsing..." << std::endl;
 
     Token token = get_next_token();
     
-    program(token);
+    Node* root; 
+
+    root = program(token);
 
     if (token.type != END_OF_FILE_TK) 
     {
@@ -22,7 +24,7 @@ void parser()
 
     std::cout << "successful parse." << std::endl;
 
-    return;
+    return root;
 
 }
 

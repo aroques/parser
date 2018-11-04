@@ -1,8 +1,8 @@
-#include "node.hpp"
+#include "parser/include/Node.hpp"
 
-struct node* get_node(std::string label)
+struct Node* get_node(std::string label)
 {
-    struct node* temp =  new struct node();
+    struct Node* temp =  new struct Node();
     temp->label = label;
     return temp;
 }

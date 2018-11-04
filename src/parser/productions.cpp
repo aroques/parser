@@ -6,26 +6,36 @@
 #include "parser/include/productions.hpp"
 #include "parser/include/error_handling.hpp"
 
-void program(Token& token) 
+Node* program(Token& token) 
 {
     if (token.instance == "void") 
     { 
+        Node* node = get_node("program");
+        
         token = get_next_token(); 
-        vars(token);
-        block(token);
-        return; 
+        
+        node->children.push_back(vars(token));
+        node->children.push_back(block(token));
+        
+        return node; 
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "void"), token_string(token), token.line_number);
+
+    return NULL;
 }
 
-void vars(Token& token) 
+Node* vars(Token& token) 
 {
     if (token.instance == "var") 
     {
+        Node* node = get_node("vars");
+
         token = get_next_token(); 
         
         if (token.type == IDENTIFIER_TK)
         {
+            node->tokens.push_back(token);
+
             token = get_next_token(); 
         
             if (token.instance == ":")
@@ -34,9 +44,13 @@ void vars(Token& token)
         
                 if (token.type == NUMBER_TK)
                 {
+                    node->tokens.push_back(token);
+                    
                     token = get_next_token(); 
-                    vars(token);
-                    return;
+                    
+                    node->children.push_back(vars(token));
+                    
+                    return node;
                 } 
                 else print_error_and_exit(token_string(NUMBER_TK, ""), token_string(token), token.line_number);
             }
@@ -45,125 +59,147 @@ void vars(Token& token)
         else print_error_and_exit(token_string(IDENTIFIER_TK, ""), token_string(token), token.line_number);
     }
 
-    return;
+    return NULL;
 }
 
-void block(Token& token) 
+Node* block(Token& token) 
 {
     if (token.instance == "start") 
     { 
+        Node* node = get_node("block");
+        
         token = get_next_token(); 
         
-        vars(token);
-        stats(token);
+        node->children.push_back(vars(token));
+        node->children.push_back(stats(token));
 
         if (token.instance == "stop")
         {
             token = get_next_token();
-            return;
+            return node;
         }
         else print_error_and_exit(token_string(KEYWORD_TK, "stop"), token_string(token), token.line_number);
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "start"), token_string(token), token.line_number);
+    
+    return NULL;
 }
 
-void stats(Token& token) 
+Node* stats(Token& token) 
 {
-    stat(token);
-    mStat(token);
-    return;
+    Node* node = get_node("stats");
+    
+    node->children.push_back(stat(token));
+    node->children.push_back(mStat(token));
+    
+    return node;
 }
 
-void mStat(Token& token) 
-{   
+Node* mStat(Token& token) 
+{
     std::set<std::string> stat_productions = 
         {"scan", "out", "block", "if", "loop", "let"};
     
     if (stat_productions.count(token.instance) > 0)
     {
-        stat(token);
-        mStat(token);
-        return;
+        Node* node = get_node("mStat");
+        
+        node->children.push_back(stat(token));
+        node->children.push_back(mStat(token));
+        
+        return node;
     }
 
-    return;
+    return NULL;
 }
 
-void stat(Token& token) 
+Node* stat(Token& token) 
 {
+    Node* node = get_node("stat");
+    
     if (token.instance == "scan")
     {
-        in(token);
-        return;
+        node->children.push_back(in(token));
+        return node;
     }
     
     if (token.instance == "out") 
     {
-        out(token);
-        return;
+        node->children.push_back(out(token));
+        return node;
     }
     
     if (token.instance == "block")
     {
-        block(token);
-        return;
+        node->children.push_back(block(token));
+        return node;
     }  
     
     if (token.instance == "if")
     {
-        if_(token);
-        return;
+        node->children.push_back(if_(token));
+        return node;
     }  
     
     if (token.instance == "loop")
     {
-        loop(token);
-        return;
+        node->children.push_back(loop(token));
+        return node;
     }  
     
     if (token.instance == "let")
     {
-        assign(token);
-        return;
+        node->children.push_back(assign(token));
+        return node;
     }  
 
     print_error_and_exit("scan, out, block, if, loop, or " + 
         token_string(KEYWORD_TK, "let"), token_string(token), token.line_number);
+    
+    return NULL;
 }
 
-void in(Token& token) 
+Node* in(Token& token) 
 {
     if (token.instance == "scan")
     {
+        Node* node = get_node("in");
+
         token = get_next_token();
 
         if (token.type == IDENTIFIER_TK)
         {
+            node->tokens.push_back(token);
+
             token = get_next_token();
 
             if (token.instance == ".")
             {
                 token = get_next_token();
-                return;
+                return node;
             }
             else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "."), token_string(token), token.line_number);
         }
         else print_error_and_exit(token_string(IDENTIFIER_TK, ""), token_string(token), token.line_number);
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "scan"), token_string(token), token.line_number);
+
+    return NULL;
 }
 
-void out(Token& token) 
+Node* out(Token& token) 
 {
     if (token.instance == "out")
     {
+        Node* node = get_node("out");
+
         token = get_next_token();
         
         if (token.instance == "[")
         {
             token = get_next_token();
             
-            expr(token);
+            node->children.push_back(expr(token));
 
             if (token.instance == "]")
             {
@@ -172,7 +208,7 @@ void out(Token& token)
                 if (token.instance == ".")
                 {
                     token = get_next_token();
-                    return;
+                    return node;
                 }
                 else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "."), token_string(token), token.line_number);
             }
@@ -181,155 +217,196 @@ void out(Token& token)
         else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "["), token_string(token), token.line_number);
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "out"), token_string(token), token.line_number);
+
+    return NULL;
 }
 
-void expr(Token& token) 
-{   
-    A(token);
+Node* expr(Token& token) 
+{
+    Node* node = get_node("expr");
+
+    node->children.push_back(A(token));
     
     if (token.instance == "/" || token.instance == "*")
     {
+        node->tokens.push_back(token);
+
         token = get_next_token();
-        expr(token);
-        return;
+        
+        node->children.push_back(expr(token));
+        
+        return node;
     }
 
-    return;
+    return node;
 }
 
-void A(Token& token) 
+Node* A(Token& token) 
 {   
-    M(token);
+    Node* node = get_node("A");
+
+    node->children.push_back(M(token));
     
     if (token.instance == "+" || token.instance == "-")
     {
+        node->tokens.push_back(token);
+        
         token = get_next_token();
-        A(token);
-        return;
+        
+        node->children.push_back(A(token));
+        
+        return node;
     }
 
-    return;
+    return node;
 }
 
-void M(Token& token) 
+Node* M(Token& token) 
 {   
+    Node* node = get_node("M");
+
     if (token.instance == "-")
     {
         token = get_next_token();
-        M(token);
-        return;
+    
+        node->children.push_back(M(token));
+        
+        return node;
     }
 
-    R(token);
-    return;
+    node->children.push_back(R(token));
+    
+    return node;
 }
 
-void R(Token& token) 
+Node* R(Token& token) 
 {   
+    Node* node = get_node("R");
+
     if (token.instance == "(")
     {
         token = get_next_token();
-        expr(token);
+        node->children.push_back(expr(token));
 
         if (token.instance == ")")
         {
             token = get_next_token();
-            return;
+            return node;
         }
         else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
     }
     
     if (token.type == IDENTIFIER_TK || token.type == NUMBER_TK)
     {
+        node->tokens.push_back(token);
         token = get_next_token();
-        return;
+        return node;
     }
     
     print_error_and_exit(token_string(IDENTIFIER_TK, "") + ", " + token_string(NUMBER_TK, "") + ", or "
         + token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
+    
+    return NULL;
 }
 
-void if_(Token& token) 
+Node* if_(Token& token) 
 {   
     if (token.instance == "if")
     {
+        Node* node = get_node("if");
         token = get_next_token();
-        conditionalStat(token);
-        return;
+        node->children.push_back(conditionalStat(token));
+        return node;
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "if"), token_string(token), token.line_number);
+
+    return NULL;
 }
 
-void loop(Token& token) 
+Node* loop(Token& token) 
 {   
     if (token.instance == "loop")
     {
+        Node* node = get_node("loop");
         token = get_next_token();
-        conditionalStat(token);
-        return;
+        node->children.push_back(conditionalStat(token));
+        return node;
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "loop"), token_string(token), token.line_number);
+
+    return NULL;
 }
 
-void conditionalStat(Token& token)
+Node* conditionalStat(Token& token)
 {
     if (token.instance == "(")
     {
+        Node* node = get_node("conditionalStat");
+        
         token = get_next_token();
         
-        expr(token);
-        RO(token);
-        expr(token);
+        node->children.push_back(expr(token));
+        node->children.push_back(RO(token));
+        node->children.push_back(expr(token));
 
         if (token.instance == ")")
         {
             token = get_next_token();
-            stat(token);
-            return;
+            node->children.push_back(stat(token));
+            return node;
         }
         else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
     }
     else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
+
+    return NULL;
 }
 
-void RO(Token& token) 
+Node* RO(Token& token) 
 {   
     if (token.instance == "<" || token.instance == ">" || token.instance == "=")
     {
+        Node* node = get_node("conditionalStat");
+        node->tokens.push_back(token);
         token = get_next_token();
         
         if (token.instance == "=")
         {
+            node->tokens.push_back(token);
             token = get_next_token();
-            return;
+            return node;
         }
 
-        return;
+        return node;
     }
 
     print_error_and_exit("<, >, or " + 
         token_string(OPERATOR_DELIMITER_TK, "="), token_string(token), token.line_number);
+
+    return NULL;
 }
 
-void assign(Token& token) 
+Node* assign(Token& token) 
 {   
     if (token.instance == "let")
     {
+        Node* node = get_node("assign");
         token = get_next_token();
         
         if (token.type == IDENTIFIER_TK)
         {
+            node->tokens.push_back(token);
             token = get_next_token();
 
             if (token.instance == "=")
             {
                 token = get_next_token();
-                expr(token);
+                node->children.push_back(expr(token));
                 
                 if (token.instance == ".")
                 {
                     token = get_next_token();
-                    return;
+                    return node;
                 }
                 else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "."), token_string(token), token.line_number);
             }
@@ -338,4 +415,6 @@ void assign(Token& token)
         else print_error_and_exit(token_string(IDENTIFIER_TK, ""), token_string(token), token.line_number);
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "let"), token_string(token), token.line_number);
+
+    return NULL;
 }

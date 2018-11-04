@@ -2,23 +2,24 @@
 #define PRODUCTIONS_HPP
 
 #include "scanner/include/token.hpp"
+#include "parser/include/Node.hpp"
 
-void program(Token& token);
-void vars(Token& token);
-void block(Token& token);
-void stats(Token& token);
-void mStat(Token& token);
-void stat(Token& token);
-void in(Token& token);
-void out(Token& token);
-void expr(Token& token);
-void A(Token& token);
-void M(Token& token);
-void R(Token& token);
-void if_(Token& token);
-void loop(Token& token);
-void conditionalStat(Token& token);
-void RO(Token& token);
-void assign(Token& token);
+Node* program(Token& token);
+Node* vars(Token& token);
+Node* block(Token& token);
+Node* stats(Token& token);
+Node* mStat(Token& token);
+Node* stat(Token& token);
+Node* in(Token& token);
+Node* out(Token& token);
+Node* expr(Token& token);
+Node* A(Token& token);
+Node* M(Token& token);
+Node* R(Token& token);
+Node* if_(Token& token);
+Node* loop(Token& token);
+Node* conditionalStat(Token& token);
+Node* RO(Token& token);
+Node* assign(Token& token);
 
 #endif // !PRODUCTIONS_HPP
