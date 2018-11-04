@@ -18,7 +18,8 @@ static int height(struct Node* node)
         return 0;
     
     else if (node->children.begin() == node->children.end())
-        // A leaf with no children, so return 1
+        // A leaf with no children,
+        // so return 1 becuase it does count towards the height of the tree
         return 1;
     
     else
