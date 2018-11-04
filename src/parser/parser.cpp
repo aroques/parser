@@ -24,6 +24,8 @@ Node* parser()
 
     std::cout << "successful parse." << std::endl;
 
+    print_level_order(root);
+
     return root;
 
 }
