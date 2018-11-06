@@ -76,10 +76,15 @@ static void print_tokens(std::vector<Token> tokens)
     std::cout << join(token_strs, ", ");
 }
 
-static void print_node(struct Node* node, int level) 
+static void print_indentation(int level)
 {
     for (int i = 0; i < level; i++)
         std::cout << "--";
+}
+
+static void print_node(struct Node* node, int level) 
+{
+    print_indentation(level);
 
     std::cout << " " << node->label << ": ";
 
