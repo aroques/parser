@@ -66,6 +66,16 @@ void print_level_order(struct Node* root)
     }
 }
 
+static void print_tokens(std::vector<Token> tokens) 
+{
+    std::vector<std::string> token_strs;
+
+    for (auto token: tokens)
+        token_strs.push_back(token_string(token));
+    
+    std::cout << join(token_strs, ", ");
+}
+
 static void print_node(struct Node* node, int level) 
 {
     for (int i = 0; i < level; i++)
@@ -73,12 +83,9 @@ static void print_node(struct Node* node, int level)
 
     std::cout << " " << node->label << ": ";
 
-    std::vector<std::string> tokens;
-
-    for (auto token: node->tokens)
-        tokens.push_back(token_string(token));
+    print_tokens(node->tokens);
     
-    std::cout << join(tokens, ", ") << std::endl;
+    std::cout << std::endl;
 }
 
 void print_preorder(struct Node* node, int level = 0) 
