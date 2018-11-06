@@ -3,7 +3,8 @@
 
 #include <string>
 #include <vector>
-#include "token.hpp"
+
+#include "scanner/include/token.hpp"
 
 struct Node
 {
@@ -13,6 +14,5 @@ struct Node
 };
 
 struct Node* get_node(std::string label);
-void print_level_order(struct Node* root);
 
 #endif // !NODE_HPP

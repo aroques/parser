@@ -4,6 +4,7 @@
 #include "scanner/include/token.hpp"
 
 #include "parser/include/Node.hpp"
+#include "parser/include/tree.hpp"
 #include "parser/include/productions.hpp"
 #include "parser/include/error_handling.hpp"
 
@@ -25,6 +26,10 @@ Node* parser()
     std::cout << "successful parse.\n\n";
 
     print_level_order(root);
+
+    std::cout << "\n";
+
+    print_preorder(root);
 
     return root;
 
