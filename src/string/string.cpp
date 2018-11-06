@@ -1,6 +1,10 @@
 
 #include "string/include/string.hpp"
 
+/*
+    Code adapted from:
+        https://www.oreilly.com/library/view/c-cookbook/0596007612/ch04s09.html
+*/
 std::string join(const std::vector<std::string>& v, std::string c) 
 {
     std::string out;
