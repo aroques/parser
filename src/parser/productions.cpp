@@ -98,7 +98,7 @@ Node* stats(Token& token)
 Node* mStat(Token& token) 
 {
     std::set<std::string> stat_productions = 
-        {"scan", "out", "block", "if", "loop", "let"};
+        {"scan", "out", "start", "if", "loop", "let"};
     
     if (stat_productions.count(token.instance) > 0)
     {
@@ -129,7 +129,7 @@ Node* stat(Token& token)
         return node;
     }
     
-    if (token.instance == "block")
+    if (token.instance == "start")
     {
         node->children.push_back(block(token));
         return node;
@@ -153,7 +153,7 @@ Node* stat(Token& token)
         return node;
     }  
 
-    print_error_and_exit("scan, out, block, if, loop, or " + 
+    print_error_and_exit("scan, out, start, if, loop, or " + 
         token_string(KEYWORD_TK, "let"), token_string(token), token.line_number);
     
     return NULL;
