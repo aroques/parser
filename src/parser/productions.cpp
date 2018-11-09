@@ -315,8 +315,24 @@ Node* if_(Token& token)
     {
         Node* node = get_node("if");
         token = get_next_token();
-        node->children.push_back(conditionalStat(token));
-        return node;
+        
+        if (token.instance == "(")
+        {
+            token = get_next_token();
+            
+            node->children.push_back(expr(token));
+            node->children.push_back(RO(token));
+            node->children.push_back(expr(token));
+
+            if (token.instance == ")")
+            {
+                token = get_next_token();
+                node->children.push_back(stat(token));
+                return node;
+            }
+            else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
+        }
+        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
     }
     else print_error_and_exit(token_string(KEYWORD_TK, "if"), token_string(token), token.line_number);
 
@@ -329,35 +345,26 @@ Node* loop(Token& token)
     {
         Node* node = get_node("loop");
         token = get_next_token();
-        node->children.push_back(conditionalStat(token));
-        return node;
-    }
-    else print_error_and_exit(token_string(KEYWORD_TK, "loop"), token_string(token), token.line_number);
 
-    return NULL;
-}
-
-Node* conditionalStat(Token& token)
-{
-    if (token.instance == "(")
-    {
-        Node* node = get_node("conditionalStat");
-        
-        token = get_next_token();
-        
-        node->children.push_back(expr(token));
-        node->children.push_back(RO(token));
-        node->children.push_back(expr(token));
-
-        if (token.instance == ")")
+        if (token.instance == "(")
         {
             token = get_next_token();
-            node->children.push_back(stat(token));
-            return node;
+            
+            node->children.push_back(expr(token));
+            node->children.push_back(RO(token));
+            node->children.push_back(expr(token));
+
+            if (token.instance == ")")
+            {
+                token = get_next_token();
+                node->children.push_back(stat(token));
+                return node;
+            }
+            else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
         }
-        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, ")"), token_string(token), token.line_number);
+        else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
     }
-    else print_error_and_exit(token_string(OPERATOR_DELIMITER_TK, "("), token_string(token), token.line_number);
+    else print_error_and_exit(token_string(KEYWORD_TK, "loop"), token_string(token), token.line_number);
 
     return NULL;
 }
@@ -366,7 +373,7 @@ Node* RO(Token& token)
 {   
     if (token.instance == "<" || token.instance == ">" || token.instance == "=")
     {
-        Node* node = get_node("conditionalStat");
+        Node* node = get_node("RO");
         node->tokens.push_back(token);
         token = get_next_token();
         

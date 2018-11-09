@@ -14,24 +14,16 @@ Node* parser()
 
     Token token = get_next_token();
     
-    Node* root; 
-
-    root = program(token);
+    Node* root = program(token);
 
     if (token.type != END_OF_FILE_TK) 
-    {
-        print_error_and_exit(token_string(END_OF_FILE_TK, ""), token_string(token), token.line_number);
-    }
+        print_error_and_exit(token_string(END_OF_FILE_TK, ""), 
+            token_string(token), token.line_number);
 
     std::cout << "successful parse.\n\n";
-
-    print_level_order(root);
-
-    std::cout << "\n";
 
     print_preorder(root);
 
     return root;
-
 }
 

@@ -88,3 +88,27 @@ std::string token_string(int token_type, std::string token_instance)
             return "token type not defined";
     }
 }
+
+std::string tree_token(Token t)
+{
+    switch (t.type)
+    {
+        case OPERATOR_DELIMITER_TK: 
+            return "operDelTk: " + t.instance;
+
+        case IDENTIFIER_TK:
+            return "idTk: " + t.instance;
+
+        case KEYWORD_TK:
+            return "kwTk: " + t.instance;
+
+        case NUMBER_TK:
+            return "#Tk: " + t.instance;
+
+        case END_OF_FILE_TK:
+            return "EOFTk";
+        
+        default:
+            return "token type not defined";
+    }
+}

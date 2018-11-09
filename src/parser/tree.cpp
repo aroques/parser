@@ -68,25 +68,30 @@ void print_level_order(struct Node* root)
 
 static void print_tokens(std::vector<Token> tokens) 
 {
+    if (tokens.size() == 0)
+        return;
+
+    std::cout << ": ";
+
     std::vector<std::string> token_strs;
 
     for (auto token: tokens)
-        token_strs.push_back(token_string(token));
+        token_strs.push_back(tree_token(token));
     
-    std::cout << join(token_strs, ", ");
+    std::cout << "{" + join(token_strs, ", ") + "}";
 }
 
 static void print_indentation(int level)
 {
     for (int i = 0; i < level; i++)
-        std::cout << "--";
+        std::cout << "  ";
 }
 
 static void print_node(struct Node* node, int level) 
 {
     print_indentation(level);
 
-    std::cout << " " << node->label << ": ";
+    std::cout << " " << node->label;
 
     print_tokens(node->tokens);
     
