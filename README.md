@@ -9,7 +9,7 @@ To build the project run:
 make
 ```
 
-To run the project you must provide a file that contains tokens. There are 3 ways to do this:  
+To run the project you must provide a file that contains source code. There are 3 ways to do this:  
 1. Provide a text file that contains strings. The file should have the extension `.fs182`.
 ```
 parser filename
